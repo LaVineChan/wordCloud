@@ -7,14 +7,14 @@ from wordcloud import WordCloud
 from scipy.misc import imread
 import wordcloud
 import imageio
-filename = r'data\message'  # ¶ÁÈ¡txtÎÄ¼şÂ·¾¶
+filename = r'data\message'  # è¯»å–txtæ–‡ä»¶è·¯å¾„
 
 
-# ´ËÄ£¿éÓÃÓÚ·ÖÎöÎÄ¼şÖĞµÄ×ÖÆµ£¬Êä³ö½á¹ûĞÎÈç ´ÊÓï --- È¨ÖØÆµ´Î
+# æ­¤æ¨¡å—ç”¨äºåˆ†ææ–‡ä»¶ä¸­çš„å­—é¢‘ï¼Œè¾“å‡ºç»“æœå½¢å¦‚ è¯è¯­ --- æƒé‡é¢‘æ¬¡
 def AnalyzeData():
     f = open(filename + '.txt', 'r', encoding='utf-8',errors='ignore')
     fcontent = f.read()
-    alpha = 'qwertyuiopasdfghjklzxcvbnm1234567890QWERTYUIOPASDFGHJKLZXCVBNM,'  # È¥³ı·ÇÖĞÎÄ²¿·Ö
+    alpha = 'qwertyuiopasdfghjklzxcvbnm1234567890QWERTYUIOPASDFGHJKLZXCVBNM,'  # å»é™¤éä¸­æ–‡éƒ¨åˆ†
     tags = jieba.analyse.extract_tags(fcontent, topK=250, withWeight=True)
     new_tags = {}
     for k in range(len(tags)):
@@ -22,7 +22,7 @@ def AnalyzeData():
         if uchar not in alpha:
             new_tags[tags[k][0]] = int(tags[k][1] * 10000)
 
-    # ½«´ÊÆµ-´ÊÓï±£´æÎªÎÄ¼ş£¬×¢Òâ¸ñÊ½»¯¶ÔÆëµÄ·½Ê½
+    # å°†è¯é¢‘-è¯è¯­ä¿å­˜ä¸ºæ–‡ä»¶ï¼Œæ³¨æ„æ ¼å¼åŒ–å¯¹é½çš„æ–¹å¼
     with open(filename + '_Word.txt', 'w') as f:
         for i, j in tags:
             if i[0] not in alpha:
@@ -30,34 +30,35 @@ def AnalyzeData():
             # print('{:8}\t{:10}'.format(i,int(j*10000)))
         f.close()
 
-    # ·µ»Ø×ÖµäÎªwordcloudÌá¹©ÒÀ¾İ
-    excludes = {"¾õµÃ", "Ê²Ã´", "Õâ¸ö", "ÄÇ¸ö",'²»ÊÇ','Ã»ÊÂ', 'Ã»ÓĞ', 'È»ºó','ÔõÃ´','ÄÇ¸ö','²»ÊÇ','Ã»ÓĞ','ÕæµÄ','¿ÉÒÔ','¾ÍÊÇ','»¹ÊÇ','Ò»ÏÂ','²»»á','ÕâÃ´','ÖåÃ¼','ÏÖÔÚ','¸ÉÂï','ÖªµÀ'}
+    #ç”Ÿæˆéœ€è¦å»æ‰çš„æ— ç”¨è¯
+    excludes = {"è§‰å¾—", "ä»€ä¹ˆ", "è¿™ä¸ª", "é‚£ä¸ª",'ä¸æ˜¯','æ²¡äº‹', 'æ²¡æœ‰', 'ç„¶å','æ€ä¹ˆ','é‚£ä¸ª','ä¸æ˜¯','æ²¡æœ‰','çœŸçš„','å¯ä»¥','å°±æ˜¯','è¿˜æ˜¯','ä¸€ä¸‹','ä¸ä¼š','è¿™ä¹ˆ','çš±çœ‰','ç°åœ¨','å¹²å˜›','çŸ¥é“'}
     new_tags = {x:new_tags[x] for x in new_tags if x not in excludes}
+    # è¿”å›å­—å…¸ä¸ºwordcloudæä¾›ä¾æ®
     return new_tags
 
 def cloudplot():
-    # ÉèÖÃ´ÊÔÆÕûÌåĞÎ×´
+    # è®¾ç½®è¯äº‘æ•´ä½“å½¢çŠ¶
     target_coloring = imageio.imread(r'data\alice.png')
-    print(AnalyzeData())
-    # ÒÔ´ÊÆµºÍ±³¾°Ä£°åÎªÒÀ¾İÉú³É´ÊÔÆ¶ÔÏó
+    
+    # ä»¥è¯é¢‘å’ŒèƒŒæ™¯æ¨¡æ¿ä¸ºä¾æ®ç”Ÿæˆè¯äº‘å¯¹è±¡
     word_cloud = WordCloud(font_path=r'C:\windows\Fonts\simhei.ttf',
                            background_color="white", max_words=2000, mask=target_coloring).generate_from_frequencies(AnalyzeData())
-    # Éú³ÉÑÕÉ«·Ö²¼
+    # ç”Ÿæˆé¢œè‰²åˆ†å¸ƒ
     image_color = wordcloud.ImageColorGenerator(target_coloring)
     # image_color =
 
 
-    # ½ö°´ÕÕ´ÊÆµ¡¢±ß½ç¡¢Ä¬ÈÏÑÕÉ«Éú³É´ÊÔÆÍ¼Ïñ
+    # ä»…æŒ‰ç…§è¯é¢‘ã€è¾¹ç•Œã€é»˜è®¤é¢œè‰²ç”Ÿæˆè¯äº‘å›¾åƒ
     plt.imshow(word_cloud)
     plt.axis("off")
     plt.figure()
 
-    # ÖØĞÂÉÏÉ«£¬°´ÕÕÍ¼ÏñÉ«²Ê·Ö²¼Éú³É
+    # é‡æ–°ä¸Šè‰²ï¼ŒæŒ‰ç…§å›¾åƒè‰²å½©åˆ†å¸ƒç”Ÿæˆ
     plt.imshow(word_cloud.recolor(color_func=image_color))
     plt.axis("off")
     plt.figure()
 
-    # »æÖÆÔ­Ê¼Í¼Ïñ
+    # ç»˜åˆ¶åŸå§‹å›¾åƒ
     plt.imshow(target_coloring, cmap=plt.cm.gray)
     plt.axis("off")
     plt.show()
